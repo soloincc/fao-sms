@@ -19,20 +19,9 @@ ARG APP_DIR=/opt/fao_sms
 # Create our base folder
 RUN mkdir /opt/fao_sms
 
-# create the folder where the static files will be collected to
-# RUN mkdir /opt/aagris/static
-
 # Copy the requirements file and install the requirements
 COPY requirements.txt /opt/fao_sms/
 RUN pip install -r /opt/fao_sms/requirements.txt
-
-# Change to the static dir and install the npm packages
-# WORKDIR /opt/aagris_static
-# COPY aagris/static/package.json .
-# RUN npm install
-
-# we need to install d3-slider on its own
-# WORKDIR /opt/aagris_static/node_modules
 
 # Enter the the base folder
 WORKDIR /opt/fao_sms

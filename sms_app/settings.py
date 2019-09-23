@@ -1,7 +1,11 @@
 import os
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+
+# set the url since its required
+STATIC_URL = 'static/'
 
 ALLOWED_HOSTS = ["*"]
 
@@ -17,16 +21,30 @@ INSTALLED_APPS = [
 ]
 
 # define the database settings
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ['DEFAULT_DB_NAME'],
-        'USER': os.environ['DEFAULT_DB_USER'],
-        'PASSWORD': os.environ['DEFAULT_DB_PASS'],
-        'HOST': os.environ['DEFAULT_DB_HOST'],
-        'PORT': os.environ['DEFAULT_DB_PORT']
-    },
-}
+if 'DJANGO_ADMIN_USERNAME' in os.environ:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.environ['DEFAULT_DB_NAME'],
+            'USER': os.environ['DEFAULT_DB_USER'],
+            'PASSWORD': os.environ['DEFAULT_DB_PASS'],
+            'HOST': os.environ['DEFAULT_DB_HOST'],
+            'PORT': os.environ['DEFAULT_DB_PORT']
+        },
+    }
+    SECRET_KEY = os.environ['SECRET_KEY']
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'fao_sms',
+            'USER': 'root',
+            'PASSWORD': 'admin',
+            'HOST': 'localhost',
+            'PORT': '',
+        },
+    }
+    SECRET_KEY = '@%z0@a8i%_j7zdb9*4+tb)$!_na+91b--@52q^1b!#nq&0t@jn'
 
 # django middleware
 MIDDLEWARE = [
@@ -39,7 +57,23 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'urls'
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'templates/django')],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
+ROOT_URLCONF = 'sms_app.urls'
 
 # our custom settings
 

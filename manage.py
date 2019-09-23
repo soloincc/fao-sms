@@ -5,8 +5,8 @@ import sys
 
 if __name__ == '__main__':
     # add our defined settings to the environment settings
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
-    from settings.base import *
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sms_app.settings")
+    from sms_app.settings import *
 
     try:
         import django
