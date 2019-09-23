@@ -1,0 +1,42 @@
+version: '3.7'
+services:
+  # app
+  sms-app:
+    restart: unless-stopped
+    build:
+      context: .
+    command: bash -c "./docker/wait-for-it.sh db:3306 --timeout=400 --strict -- ./docker/docker-entrypoint.sh"
+    env_file:
+      - 'variables.env'
+    networks:
+      - sms-network
+    ports:
+      - 9016:9016
+
+  db:
+    build:
+      context: .
+      dockerfile: ./docker/db-Dockerfile
+    restart: unless-stopped
+    env_file:
+      - 'variables.env'
+    volumes:
+      - ./db_data:/var/lib/mysql:rw
+    ports:
+      - 3306
+    networks:
+      - sms-network
+
+  # redis
+  redis:
+    restart: unless-stopped
+    image: redis
+    ports:
+      - 6379:6379
+    networks:
+      - sms-network
+
+#Docker Networks
+networks:
+  sms-network:
+    driver: bridge

@@ -1,0 +1,13 @@
+Django==2.2
+mysqlclient==1.4.2
+requests==2.13.0
+
+# jsonfield==2.0.2
+
+# Jinja2==2.10
+# MarkupSafe==1.1.0
+# pathlib==1.0.1
+# django-jet==1.0.8
+# easy-thumbnails==2.5
+# raven==6.2.1
+# PyExcelerate==0.7.1
