@@ -13,11 +13,13 @@ from faker import Faker
 from django.db import transaction
 from django.utils import timezone
 from django.conf import settings
+from raven import Client
 
 from .common_tasks import Terminal
 from .models import SMSQueue, MessageTemplates, Recepients, Campaign
 
 terminal = Terminal()
+sentry = Client(settings.SENTRY_DSN)
 
 settings.TIME_ZONE
 current_tz = pytz.timezone(settings.TIMEZONE)
@@ -45,6 +47,7 @@ class FAOSMSQueue():
             transaction.commit()
         except Exception as e:
             transaction.rollback()
+            sentry.captureException()
             terminal.tprint(str(e), 'fail')
 
         terminal.tprint("The input file '%s' with test data has been processed successfully..." % input_file, 'info')
@@ -122,6 +125,7 @@ class FAOSMSQueue():
                 recepient = self.add_recepient(rec)
             except Exception as e:
                 terminal.tprint(str(e), 'fail')
+                sentry.captureException()
                 raise Exception(str(e))
 
     def save_campaign(self, campaign_name):
@@ -140,6 +144,7 @@ class FAOSMSQueue():
             return cur_campaign
         except Exception as e:
             terminal.tprint(str(e), 'fail')
+            sentry.captureException()
             raise
 
     def add_recepient(self, recepient_no, first_name=None, other_names=None):
@@ -174,6 +179,7 @@ class FAOSMSQueue():
             return recepient
         except Exception as e:
             terminal.tprint(str(e), 'fail')
+            sentry.captureException()
             raise Exception(str(e))
 
     def add_message_template(self, template, uuid, campaign):
@@ -200,6 +206,7 @@ class FAOSMSQueue():
             return mssg_template
         except Exception as e:
             terminal.tprint(str(e), 'fail')
+            sentry.captureException()
             raise Exception(str(e))
 
     def process_scheduled_sms(self, provider):
@@ -223,6 +230,7 @@ class FAOSMSQueue():
                     self.send_via_at(sched_sms)
         except Exception as e:
             terminal.tprint(str(e), 'fail')
+            sentry.captureException()
 
         # def queue_via_at(self, mssg):
 
@@ -260,6 +268,7 @@ class FAOSMSQueue():
             # print(this_resp)
         except Exception as e:
             terminal.tprint(str(e), 'fail')
+            sentry.captureException()
             raise Exception(str(e))
 
     def process_at_delivery_report(self, report):
@@ -267,6 +276,7 @@ class FAOSMSQueue():
             print(report)
         except Exception as e:
             terminal.tprint(str(e), 'fail')
+            sentry.captureException()
             raise Exception(str(e))
 
 

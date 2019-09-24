@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'raven.contrib.django.raven_compat',
     'sms_app'
 ]
 
@@ -98,6 +99,8 @@ TEMPLATES = [
 ]
 
 ROOT_URLCONF = 'sms_app.urls'
+
+SENTRY_DSN = 'https://b2ce2558c5544442bea4b7b812a1af49:d9435a5cca28458db4572f26f3a53b4d@sentry.badili.co.ke/7?verify_ssl=0'
 
 # our custom settings
 
