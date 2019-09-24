@@ -101,7 +101,7 @@ class SMSQueue(TimeModel):
         MaxLengthValidator(15, message='The status must not be more than 15 characters long')
     ])
     # some providers provide a unique id for the sent messages, save this ID here
-    provider_id = models.CharField(max_length=100, null=True, blank=False)
+    provider_id = models.CharField(max_length=100, null=True, blank=True)
     schedule_time = models.DateTimeField(blank=False)                               # the time the sms is to be sent
     in_queue = models.BooleanField(blank=False, default=0)                          # is the message in the sending queue
     queue_time = models.DateTimeField(blank=True, null=True, default=None)          # the time the sms was added to the queue
