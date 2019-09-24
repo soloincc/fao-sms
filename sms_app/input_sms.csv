@@ -1,10 +1,10 @@
 message,recepient_nos,campaign,sending_time
-This a short message,"+254726567797,+254715803404",,2019-09-22 16:04:04
+This a short message,"+254726567797,+254715803404",,
 This is a standalone message in a campaign,"+254726567797,+254715803404",Somalia emergency drought response and recovery,tomorrow
 This is the 1st message in a campaign,"+254726567797,+254715803404,+254733567797",Somalia emergency drought response and recovery,2019-09-26 16:04:04
 This is the 2nd message in a campaign,"+254726567797,+254715803404,+254733567797",Somalia emergency drought response and recovery,2019-09-26 16:04:04
 This is the 3rd message in a campaign,"+254726567797,+254715803404,+254733567797",Somalia emergency drought response and recovery,2019-09-26 16:04:04
-Another example of a campaign message,+254715803404,Food Security and Nutrition Analysis Unit,tomorrow
+Another example of a campaign message,+254715803404,Food Security and Nutrition Analysis Unit,
 FSNAU message 1,+254726567797,Food Security and Nutrition Analysis Unit,tomorrow
 Another custom message from FSNAU,+254733567797,Food Security and Nutrition Analysis Unit,tomorrow
 "This is a very long message to be sent in 4 parts. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",+254726567797,,tomorrow
