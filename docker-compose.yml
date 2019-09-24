@@ -21,7 +21,7 @@ services:
     restart: unless-stopped
     build:
       context: .
-    command: bash -c "./docker/wait-for-it.sh db:3306 --timeout=400 --strict -- ./docker/docker-entrypoint.sh"
+    command: bash -c "./docker/wait-for-it.sh db:3306 --timeout=600 --strict -- ./docker/docker-entrypoint.sh"
     env_file:
       - 'variables.env'
     networks:
