@@ -1,5 +1,21 @@
 version: '3.7'
 services:
+  db:
+    build:
+      context: .
+      dockerfile: ./docker/db-Dockerfile
+    restart: unless-stopped
+    env_file:
+      - 'variables.env'
+    volumes:
+      - ./db_data:/var/lib/mysql:rw
+    ports:
+      - target: 3306
+        protocol: tcp
+
+    networks:
+      - sms-network
+
   # app
   sms-app:
     restart: unless-stopped
@@ -14,20 +30,6 @@ services:
       - 9018:9018
     links:
       - db
-
-  db:
-    build:
-      context: .
-      dockerfile: ./docker/db-Dockerfile
-    restart: unless-stopped
-    env_file:
-      - 'variables.env'
-    volumes:
-      - ./db_data:/var/lib/mysql:rw
-    ports:
-      - 3306
-    networks:
-      - sms-network
 
   # redis
   redis:
