@@ -72,7 +72,7 @@ class FAOSMSQueue():
 
         # check if we have a sending time
         cur_time = timezone.localtime(timezone.now())
-        # print(mssg['sending_time'])
+        print(mssg['sending_time'])
         if mssg['sending_time'] != '':
             mssg_sending_time = mssg['sending_time'].strip()
             # check if the data specified is correct, else throw an error
@@ -228,6 +228,8 @@ class FAOSMSQueue():
                 # print('%s: %s - %s' % (sched_sms.id, sched_sms.schedule_time, sched_sms.recepient_no))
                 if provider == 'at':
                     self.send_via_at(sched_sms)
+                elif provider == 'nexmo':
+                    self.send_via_nexmo(sched_sms)
         except Exception as e:
             terminal.tprint(str(e), 'fail')
             sentry.captureException()
@@ -243,7 +245,7 @@ class FAOSMSQueue():
 
         username = settings.SMS_GATEWAYS['gateways']['at']['USERNAME']
         api_key = settings.SMS_GATEWAYS['gateways']['at']['KEY']
-        print("Using the creds: %s - %s" % (username, api_key))
+        print("AT: Using the creds: %s - %s" % (username, api_key))
         africastalking.initialize(username, api_key)
         self.at_sms = africastalking.SMS
 
@@ -310,13 +312,85 @@ class FAOSMSQueue():
             sentry.captureException()
             raise Exception(str(e))
 
+    def configure_nexmo(self):
+        """Configure the NEXMO SMS gateway
 
-def process_at_response(error, response):
-    print(response)
-    if error is not None:
-        raise Exception(error)
+        """
+        import nexmo
 
-    for resp in response['SMSMessageData']['Recipients']:
-        # get this message which was queued and update its status
-        # mssg = SMSQueue.objects.filter(schedule_time__lte=cur_time, msg_status='SCHEDULED').all()
-        print(resp)
+        key = settings.SMS_GATEWAYS['gateways']['nexmo']['KEY']
+        secret = settings.SMS_GATEWAYS['gateways']['nexmo']['SECRET']
+        print("NEXMO: Using the creds: %s - %s" % (key, secret))
+        self.nexmo = nexmo.Client(key=key, secret=secret)
+
+    def send_via_nexmo(self, mssg):
+        """Sends a message using the configured NEXMO SMS gateway
+
+        Args:
+            mssg (json); The message to be sent
+        """
+        try:
+            # queue the message to be sent via africastalking. Once queued, update the database with the queue status
+            cur_time = timezone.localtime(timezone.now())
+            cur_time = cur_time.strftime('%Y-%m-%d %H:%M:%S')
+            # for nexmo we need to strip out the preceeding +. All our numbers have a preceeding +
+            recepient = mssg.recepient_no.split('+')[1]
+            this_resp = self.nexmo.send_message({
+                'from': 'Wangoru Kihara',
+                'to': recepient,
+                'text': mssg.message,
+                'ttl': settings.SMS_VALIDITY * 60 * 60          # specify a TTL since NEXMO allows this
+            })
+
+            print(this_resp)
+            if this_resp["messages"][0]["status"] == "0":
+                mssg.in_queue = 1
+                mssg.queue_time = cur_time
+                mssg.msg_status = settings.NEXMO_STATUS_CODES[int(this_resp["messages"][0]["status"])]
+                mssg.provider_id = this_resp['messages'][0]['message-id']
+
+                mssg.full_clean()
+                mssg.save()
+        except Exception as e:
+            terminal.tprint(str(e), 'fail')
+            sentry.captureException()
+            raise Exception(str(e))
+
+    def process_nexmo_report(self, request):
+        """Process a notification from NEXMO gateway
+
+        """
+        try:
+            # get the smsqueue and update its status
+            delivery_type = request.GET.get('type')
+            if delivery_type == 'delivery':
+                self.process_nexmo_delivery_report(request)
+        except Exception as e:
+            terminal.tprint(str(e), 'fail')
+            sentry.captureException()
+            raise Exception(str(e))
+
+    def process_nexmo_delivery_report(self, request):
+        """Process a delivery notification from africastalking
+
+        """
+        try:
+            # get the smsqueue and update its status
+            sms_id = request.POST.get('messageId')
+            sms_status = request.POST.get('status')
+
+            queue_instance = SMSQueue.objects.filter(provider_id=sms_id).get()
+
+            if sms_status in settings.NEXMO_FINAL_DELIVERY_STATUS:
+                # the sms has a final delivery status... so lets add this to the database
+                queue_instance.msg_status = settings.NEXMO_DELIVERY_CODES[sms_status]
+                mssg_time = request.POST.get('message-timestamp')
+                delivery_time = timezone.datetime.strptime(mssg_time, '%Y-%m-%d %H:%M:%S')
+                queue_instance.delivery_time = delivery_time
+
+                queue_instance.full_clean()
+                queue_instance.save()
+        except Exception as e:
+            terminal.tprint(str(e), 'fail')
+            sentry.captureException()
+            raise Exception(str(e))

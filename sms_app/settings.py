@@ -55,7 +55,10 @@ if 'DJANGO_ADMIN_USERNAME' in os.environ:
                 'ENDPOINT': 'https://api.sandbox.africastalking.com/version1/messaging',
                 'USERNAME': os.environ['AT_USERNAME']
             },
-            'nexmo': {}
+            'nexmo': {
+                'KEY': os.environ['NEXMO_KEY'],
+                'SECRET': os.environ['NEXMO_SECRET'],
+            }
         }
     }
 
@@ -92,7 +95,10 @@ else:
                 'ENDPOINT': 'https://api.sandbox.africastalking.com/version1/messaging',
                 'USERNAME': env('AT_USERNAME')
             },
-            'nexmo': {}
+            'nexmo': {
+                'KEY': env('NEXMO_KEY'),
+                'SECRET': env('NEXMO_SECRET'),
+            }
         }
     }
     SENTRY_DSN = 'https://%s:%s@sentry.badili.co.ke/7?verify_ssl=0' % (env('SENTRY_USER'), env('SENTRY_PASS'))
@@ -170,3 +176,50 @@ AT_FAILURE_REASON = {
 }
 
 AT_FINAL_DELIVERY_STATUS = ['Rejected', 'Success', 'Failed']
+
+# nexmo SMS codes as defined https://developer.nexmo.com/messaging/sms/guides/troubleshooting-sms
+NEXMO_STATUS_CODES = {
+    0: 'Success',                               # The message was successfully accepted for delivery.
+    1: 'Throttled',                             # You are sending SMS faster than the account limit (see What is the Throughput Limit for Outbound SMS?).
+    2: 'Missing Parameters',                    # Your request is missing one of the required parameters: from, to, api_key, api_secret or text.
+    3: 'Invalid Parameters',                    # The value of one or more parameters is invalid.
+    4: 'Invalid Credentials',                   # Your API key and/or secret are incorrect, invalid or disabled.
+    5: 'Internal Error',                        # An error has occurred in the platform whilst processing this message.
+    6: 'Invalid Message',                       # The platform was unable to process this message, for example, an unrecognized number prefix.
+    7: 'Number Barred',                         # The number you are trying to send messages to is blacklisted and may not receive them.
+    8: 'Partner Account Barred',                # Your Nexmo account has been suspended. Contact support@nexmo.com.
+    9: 'Partner Quota Violation',               # You do not have sufficient credit to send the message. Top-up and retry.
+    10: 'Too Many Existing Binds',              # The number of simultaneous connections to the platform exceeds your account allocation.
+    11: 'Account Not Enabled For HTTP',         # This account is not provisioned for the SMS API, you should use SMPP instead.
+    12: 'Message Too Long',                     # The message length exceeds the maximum allowed.
+    14: 'Invalid Signature',                    # The signature supplied could not be verified.
+    15: 'Invalid Sender Address',               # You are using a non-authorized sender ID in the from field. This is most commonly in North America, where a Nexmo long virtual number or short code is required.
+    22: 'Invalid Network Code',                 # The network code supplied was either not recognized, or does not match the country of the destination address.
+    23: 'Invalid Callback URL',                 # The callback URL supplied was either too long or contained illegal characters.
+    29: 'Non-Whitelisted Destination',          # Your Nexmo account is still in demo mode. While in demo mode you must add target numbers to your whitelisted destination list. Top-up your account to remove this limitation.
+    32: 'Signature And API Secret Disallowed',  # A signed request may not also present an api_secret.
+    33: 'Number De-activated'
+}
+
+NEXMO_FINAL_DELIVERY_STATUS = ['delivered', 'failed', 'rejected', 'expired']
+
+# nexmo delivery codes as defined https://developer.nexmo.com/messaging/sms/guides/delivery-receipts
+NEXMO_DELIVERY_CODES = {
+    0: "Delivered",                            # Message was delivered successfully
+    1: "Unknown",                              # Message was not delivered, and no reason could be determined
+    2: "Absent Subscriber - Temporary",        # Message was not delivered because handset was temporarily unavailable - retry
+    3: "Absent Subscriber - Permanent",        # The number is no longer active and should be removed from your database
+    4: "Call Barred by User",                  # This is a permanent error:the number should be removed from your database and the user must contact their network   op:er"ator to remove the bar
+    5: "Portability Error",                    # There is an issue relating to portability of the number and you should contact the network operator to resolve it
+    6: "Anti-Spam Rejection",                  # The message has been blocked by a carrier's anti-spam filter
+    7: "Handset Busy",                         # The handset was not available at the time the message was sent - retry
+    8: "Network Error",                        # The message failed due to a network error - retry
+    9: "Illegal Number",                       # The user has specifically requested not to receive messages from a specific service
+    10: "Illegal Message",                     # There is an error in a message parameter, e.g. wrong encoding flag
+    11: "Unroutable",                          # Nexmo cannot find a suitable route to deliver the message - contact support@nexmo.com
+    12: "Destination Unreachable",             # A route to the number cannot be found - confirm the recipient's number
+    13: "Subscriber Age Restriction",          # The target cannot receive your message due to their age
+    14: "Number Blocked by Carrier",           # The recipient should ask their carrier to enable SMS on their plan
+    15: "Prepaid Insufficient Funds",          # The recipient is on a prepaid plan and does not have enough credit to receive your message
+    99: "General Error",                       # Typically refers to an error in the route - contact support@nexmo.com
+}

@@ -23,7 +23,15 @@ def process_at_callbacks(request):
     fao_sms = FAOSMSQueue()
     fao_sms.process_at_report(request)
 
-    return return_json({'mssg': 'processed'})
+    return return_json({'mssg': 'delivered via AT'})
+
+
+@csrf_exempt
+def process_nexmo_callbacks(request):
+    fao_sms = FAOSMSQueue()
+    fao_sms.process_nexmo_report(request)
+
+    return return_json({'mssg': 'delivered via Nexmo'})
 
 
 def return_json(mappings):

@@ -9,6 +9,9 @@ class Command(BaseCommand):
         parser.add_argument('--provider', nargs='?', type=str)
 
     def handle(self, *args, **options):
+        """Select and configure the provider that the user wants to send the message with
+
+        """
         if 'provider' in options:
             if options['provider'] is None:
                 print("No default provider selected. The bulk SMS will be spread across the defined providers")
@@ -21,4 +24,6 @@ class Command(BaseCommand):
         queue = FAOSMSQueue()
         if provider == 'at':
             queue.configure_at()
+        elif provider == 'nexmo':
+            queue.configure_nexmo()
         queue.process_scheduled_sms(provider)
