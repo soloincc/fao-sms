@@ -241,7 +241,6 @@ class FAOSMSQueue():
         """
         import africastalking
 
-        print(settings.SMS_GATEWAYS['gateways']['at']['KEY'])
         username = settings.SMS_GATEWAYS['gateways']['at']['USERNAME']
         api_key = settings.SMS_GATEWAYS['gateways']['at']['KEY']
         africastalking.initialize(username, api_key)

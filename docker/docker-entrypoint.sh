@@ -7,9 +7,6 @@ cd /opt/fao_sms
 # apply the migrations
 python manage.py migrate
 
-# test mysql connection
-mysql -u root -padmin -h db -e 'show databases'
-
 # add the test data provided
 python manage.py add_test_data sms_app/input_sms.csv
 
