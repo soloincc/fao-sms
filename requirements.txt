@@ -4,6 +4,8 @@ requests==2.18.4
 faker==2.0.2
 africastalking==1.1.8
 raven==6.5.0
+djangorestframework==3.9.3
+django-environ==0.4.5
 
 # jsonfield==2.0.2
 

@@ -30,7 +30,7 @@ INSTALLED_APPS = [
 
 # define the database settings
 if 'DJANGO_ADMIN_USERNAME' in os.environ:
-    # print("using os.environ variables...")
+    print("using os.environ variables...")
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
@@ -44,7 +44,13 @@ if 'DJANGO_ADMIN_USERNAME' in os.environ:
     }
 
 else:
-    # print("using locally defined variables...")
+    print("using locally defined variables...")
+    import environ
+    env = environ.Env(
+        DEBUG=(bool, False)
+    )
+    # reading .env file
+    environ.Env.read_env()
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
@@ -64,10 +70,9 @@ else:
         'gateways': {
             'infobip': {},
             'at': {
-                'KEY': 'c5fc6731409a3800c444c429b3e97252e3945e6f7d8ca3540843e3c0a0449331',
+                'KEY': env('AT_KEY'),
                 'ENDPOINT': 'https://api.sandbox.africastalking.com/version1/messaging',
-                # 'USERNAME': 'badili'
-                'USERNAME': 'sandbox'
+                'USERNAME': env('AT_USERNAME')
             },
             'nexmo': {}
         }
@@ -102,7 +107,7 @@ TEMPLATES = [
 
 ROOT_URLCONF = 'sms_app.urls'
 
-SENTRY_DSN = 'https://b2ce2558c5544442bea4b7b812a1af49:d9435a5cca28458db4572f26f3a53b4d@sentry.badili.co.ke/7?verify_ssl=0'
+SENTRY_DSN = 'https://%s:%s@sentry.badili.co.ke/7?verify_ssl=0' % (env('SENTRY_USER'), env('SENTRY_PASS'))
 
 # our custom settings
 

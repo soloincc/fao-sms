@@ -97,8 +97,8 @@ class SMSQueue(TimeModel):
         MaxLengthValidator(15, message='The recepient number must not be more than 15 characters long')
     ])
     # expecting the statuses: SCHEDULED, QUEUED, SENT, RECEIVED, FAILED
-    msg_status = models.CharField(max_length=15, blank=False, validators=[
-        MaxLengthValidator(15, message='The status must not be more than 15 characters long')
+    msg_status = models.CharField(max_length=50, blank=False, validators=[
+        MaxLengthValidator(50, message='The status must not be more than 15 characters long')
     ])
     # some providers provide a unique id for the sent messages, save this ID here
     provider_id = models.CharField(max_length=100, null=True, blank=True)
