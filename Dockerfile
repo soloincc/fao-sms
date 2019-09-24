@@ -11,12 +11,7 @@ RUN apk add mysql-dev ca-certificates \
     jpeg-dev zlib-dev \
     gcc libc-dev g++ \
     bash \
-    coreutils \
-    tzdata
-
-# use the EAT timezone
-COPY /usr/share/zoneinfo/Africa/Nairobi /etc/localtime
-RUN echo "Africa/Nairobi" > /etc/timezone
+    coreutils
 
 ## default variables
 ARG APP_DIR=/opt/fao_sms
@@ -36,5 +31,10 @@ ADD . /opt/fao_sms/
 
 # move the variables.env file
 COPY variables.env /opt/fao_sms/sms_app/.env
+
+# use the EAT timezone
+RUN apk add tzdata
+COPY /usr/share/zoneinfo/Africa/Nairobi /etc/localtime
+RUN echo "Africa/Nairobi" > /etc/timezone
 
 CMD ["/opt/fao_sms/docker/docker-entrypoint.sh"]
