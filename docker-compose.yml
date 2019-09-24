@@ -12,6 +12,8 @@ services:
       - sms-network
     ports:
       - 9018:9018
+    links:
+      - db
 
   db:
     build:
