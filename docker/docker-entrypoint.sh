@@ -2,6 +2,11 @@
 # publish our environment variables
 printenv | grep -v "no_proxy" >> /etc/environment
 python -c 'import sys; print(sys.path)'
+
+# use the EAT timezone
+cp /usr/share/zoneinfo/Africa/Nairobi /etc/localtime
+echo "Africa/Nairobi" > /etc/timezone
+
 cd /opt/fao_sms
 
 # apply the migrations
