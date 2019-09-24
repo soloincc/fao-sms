@@ -26,4 +26,9 @@ class Command(BaseCommand):
             queue.configure_at()
         elif provider == 'nexmo':
             queue.configure_nexmo()
+        else:
+            # configure all the providers so that they can be selected randomly
+            queue.configure_at()
+            queue.configure_nexmo()
+
         queue.process_scheduled_sms(provider)

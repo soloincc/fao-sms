@@ -16,6 +16,6 @@ urlpatterns = [
     path('', include(router.urls)),
     url(r'^$', views.index, name='home'),
     url(r'^smsqueue', views.process_at_callbacks, name='process_at_callbacks'),
-    url(r'nexmo', views.process_nexmo_callbacks, name='process_nexmo_callbacks'),
+    url('nexmo/', views.process_nexmo_callbacks, name='process_nexmo_callbacks'),
     # path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]

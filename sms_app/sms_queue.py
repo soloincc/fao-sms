@@ -8,6 +8,7 @@ import re
 import datetime
 import uuid
 import pytz
+import random
 
 from faker import Faker
 from django.db import transaction
@@ -104,6 +105,10 @@ class FAOSMSQueue():
             if len(rec) == 0:
                 continue
 
+            if re.search('^\+\d+$', rec) is None:
+                err_mssg = 'The recepients phone number must begin with a plus(+) sign and contain only integers'
+                terminal.tprint(err_mssg, 'fail')
+                raise Exception(err_mssg)
             try:
                 recepient = Recepients.objects.filter(recepient_no=rec).get()
 
@@ -217,18 +222,23 @@ class FAOSMSQueue():
 
         cur_time = timezone.localtime(timezone.now())
         cur_time = cur_time.strftime('%Y-%m-%d %H:%M:%S')
-        print(cur_time)
+        use_provider = provider
         try:
             gateway_ids = list(settings.SMS_GATEWAYS['gateways'].keys())
-            if provider not in gateway_ids:
+            if provider not in gateway_ids and provider is not None:
                 raise Exception("'%s' is not configured as a gateway provider. Select from '%s'" % (provider, ', '.join(gateway_ids)))
+
+            if provider is None:
+                use_provider = random.choice(list(settings.SMS_GATEWAYS['gateways'].keys()))
             # fetch the sms whose sending schedule time has passed
             sms2send = SMSQueue.objects.filter(schedule_time__lte=cur_time, msg_status='SCHEDULED').all()
             for sched_sms in sms2send:
                 # print('%s: %s - %s' % (sched_sms.id, sched_sms.schedule_time, sched_sms.recepient_no))
-                if provider == 'at':
+                if use_provider == 'at':
+                    terminal.tprint('Sending the SMS via AT...', 'info')
                     self.send_via_at(sched_sms)
-                elif provider == 'nexmo':
+                elif use_provider == 'nexmo':
+                    terminal.tprint('Sending the SMS via Nexmo...', 'info')
                     self.send_via_nexmo(sched_sms)
         except Exception as e:
             terminal.tprint(str(e), 'fail')
@@ -245,7 +255,7 @@ class FAOSMSQueue():
 
         username = settings.SMS_GATEWAYS['gateways']['at']['USERNAME']
         api_key = settings.SMS_GATEWAYS['gateways']['at']['KEY']
-        print("AT: Using the creds: %s - %s" % (username, api_key))
+        # print("AT: Using the creds: %s - %s" % (username, api_key))
         africastalking.initialize(username, api_key)
         self.at_sms = africastalking.SMS
 
@@ -320,7 +330,7 @@ class FAOSMSQueue():
 
         key = settings.SMS_GATEWAYS['gateways']['nexmo']['KEY']
         secret = settings.SMS_GATEWAYS['gateways']['nexmo']['SECRET']
-        print("NEXMO: Using the creds: %s - %s" % (key, secret))
+        # print("NEXMO: Using the creds: %s - %s" % (key, secret))
         self.nexmo = nexmo.Client(key=key, secret=secret)
 
     def send_via_nexmo(self, mssg):

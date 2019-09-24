@@ -49,7 +49,7 @@ if 'DJANGO_ADMIN_USERNAME' in os.environ:
         'gateways_priority': [],    # the priority of the listed gateways, if not defined, the gateways will be selected randomly
 
         'gateways': {
-            'infobip': {},
+            # 'infobip': {},
             'at': {
                 'KEY': os.environ['AT_KEY'],
                 'ENDPOINT': 'https://api.sandbox.africastalking.com/version1/messaging',
@@ -89,7 +89,7 @@ else:
         'gateways_priority': [],    # the priority of the listed gateways, if not defined, the gateways will be selected randomly
 
         'gateways': {
-            'infobip': {},
+            # 'infobip': {},
             'at': {
                 'KEY': env('AT_KEY'),
                 'ENDPOINT': 'https://api.sandbox.africastalking.com/version1/messaging',
