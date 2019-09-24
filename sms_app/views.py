@@ -6,6 +6,7 @@ from .serializers import SMSQueueSerializer
 from .models import SMSQueue
 from rest_framework import viewsets, permissions
 from rest_framework.views import APIView
+from django.views.decorators.csrf import csrf_exempt
 
 
 terminal = Terminal()
