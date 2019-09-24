@@ -9,8 +9,12 @@ STATIC_URL = 'static/'
 
 ALLOWED_HOSTS = ["*"]
 
+SECRET_KEY = '@z0@a8_j+tb)$_na+91b-@52q^1b#nq&0t@jn'
+
 # use timezones
 USE_TZ = True
+
+TIMEZONE = 'Africa/Nairobi'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -38,8 +42,6 @@ if 'DJANGO_ADMIN_USERNAME' in os.environ:
             'TIMEZONE': os.environ['TIMEZONE']
         },
     }
-    SECRET_KEY = os.environ['SECRET_KEY']
-    TIMEZONE = os.environ['TIMEZONE']
 
 else:
     print("using locally defined variables...")
@@ -54,8 +56,6 @@ else:
             'TIMEZONE': 'Africa/Nairobi'
         },
     }
-    SECRET_KEY = '@%z0@a8i%_j7zdb9*4+tb)$!_na+91b--@52q^1b!#nq&0t@jn'
-    TIMEZONE = 'Africa/Nairobi'
 
     SMS_GATEWAYS = {
         'default': 'at',            # the id of the gateway to use as a default. Select from the gateways listed below
