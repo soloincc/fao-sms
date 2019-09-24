@@ -226,7 +226,25 @@ class FAOSMSQueue():
 
         # def queue_via_at(self, mssg):
 
+    def configure_at(self):
+        """Configures and initializes AfricasTalking as an SMS gateway provider
+
+        Using the settings provided in the settings file, configures and initializes AT as an SMS gateway
+        """
+        import africastalking
+
+        print(settings.SMS_GATEWAYS['gateways']['at']['KEY'])
+        username = settings.SMS_GATEWAYS['gateways']['at']['USERNAME']
+        api_key = settings.SMS_GATEWAYS['gateways']['at']['KEY']
+        africastalking.initialize(username, api_key)
+        self.at_sms = africastalking.SMS
+
     def send_via_at(self, mssg):
+        """Submits a message to be sent via the AT gateway
+        
+        Args:
+            The message object as JSON to be sent
+        """
         try:
             # queue the message to be sent via africastalking. Once queued, update the database with the queue status
             cur_time = timezone.localtime(timezone.now())
@@ -244,14 +262,12 @@ class FAOSMSQueue():
             terminal.tprint(str(e), 'fail')
             raise Exception(str(e))
 
-    def configure_at(self):
-        import africastalking
-
-        print(settings.SMS_GATEWAYS['gateways']['at']['KEY'])
-        username = settings.SMS_GATEWAYS['gateways']['at']['USERNAME']
-        api_key = settings.SMS_GATEWAYS['gateways']['at']['KEY']
-        africastalking.initialize(username, api_key)
-        self.at_sms = africastalking.SMS
+    def process_at_delivery_report(self, report):
+        try:
+            print(report)
+        except Exception as e:
+            terminal.tprint(str(e), 'fail')
+            raise Exception(str(e))
 
 
 def process_at_response(error, response):
