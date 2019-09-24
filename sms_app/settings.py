@@ -152,3 +152,5 @@ AT_FAILURE_REASON = {
     'UserDoesNotExist': "This occurs when the message is sent to a non-existent mobile number.",
     'DeliveryFailure': "This occurs when message delivery fails for any reason not listed above or where the MSP didn’t provide a delivery failure reason.",
 }
+
+AT_FINAL_DELIVERY_STATUS = ['Rejected', 'Success', 'Failed']

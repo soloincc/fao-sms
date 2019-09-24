@@ -6,13 +6,15 @@ from rest_framework import routers
 
 # from django.conf import settings
 from sms_app import views
+# from .models import SMSQueue
 
 router = routers.DefaultRouter()
-router.register(r'smsqueue', views.SMSQueueViewSet)
+# {'post': 'put'}
+# router.register('smsqueue', views.process_at_callbacks, basename='SMSQueue')
 
 urlpatterns = [
     path('', include(router.urls)),
     url(r'^$', views.index, name='home'),
-    url(r'^callback', views.process_callbacks, name='process_callbacks'),
+    url(r'^smsqueue', views.process_at_callbacks, name='process_at_callbacks'),
     # path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]

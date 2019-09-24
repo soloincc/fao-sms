@@ -264,6 +264,7 @@ class FAOSMSQueue():
             mssg.queue_time = cur_time
             mssg.msg_status = settings.AT_STATUS_CODES[this_resp['SMSMessageData']['Recipients'][0]['statusCode']]
             mssg.provider_id = this_resp['SMSMessageData']['Recipients'][0]['messageId']
+            mssg.full_clean()
             mssg.save()
             # print(this_resp)
         except Exception as e:
@@ -271,9 +272,39 @@ class FAOSMSQueue():
             sentry.captureException()
             raise Exception(str(e))
 
-    def process_at_delivery_report(self, report):
+    def process_at_report(self, request):
+        """Process a notification from AT gateway
+
+        """
         try:
-            print(report)
+            # get the smsqueue and update its status
+            delivery_type = request.GET.get('type')
+            if delivery_type == 'delivery':
+                self.process_at_delivery_report(request)
+        except Exception as e:
+            terminal.tprint(str(e), 'fail')
+            sentry.captureException()
+            raise Exception(str(e))
+
+    def process_at_delivery_report(self, request):
+        """Process a delivery notification from africastalking
+
+        """
+        try:
+            # get the smsqueue and update its status
+            sms_id = request.POST.get('id')
+            sms_status = request.POST.get('status')
+            queue_instance = SMSQueue.objects.filter(provider_id=sms_id).get()
+
+            if sms_status in settings.AT_FINAL_DELIVERY_STATUS:
+                # the sms has a final delivery status... so lets add this to the database
+                queue_instance.msg_status = sms_status
+                cur_time = timezone.localtime(timezone.now())
+                cur_time = cur_time.strftime('%Y-%m-%d %H:%M:%S')
+                queue_instance.delivery_time = cur_time
+
+                queue_instance.full_clean()
+                queue_instance.save()
         except Exception as e:
             terminal.tprint(str(e), 'fail')
             sentry.captureException()
