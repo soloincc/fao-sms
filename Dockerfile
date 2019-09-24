@@ -11,7 +11,12 @@ RUN apk add mysql-dev ca-certificates \
     jpeg-dev zlib-dev \
     gcc libc-dev g++ \
     bash \
-    coreutils
+    coreutils \
+    tzdata
+
+# use the EAT timezone
+COPY /usr/share/zoneinfo/Africa/Nairobi /etc/localtime
+RUN echo "Africa/Nairobi" > /etc/timezone
 
 ## default variables
 ARG APP_DIR=/opt/fao_sms
