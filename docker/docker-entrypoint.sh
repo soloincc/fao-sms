@@ -1,7 +1,7 @@
 #!/bin/bash
 # publish our environment variables
 printenv | grep -v "no_proxy" >> /etc/environment
-# python -c 'import sys; print sys.path'
+python -c 'import sys; print(sys.path)'
 cd /opt/fao_sms
 
 # apply the migrations
