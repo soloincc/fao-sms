@@ -33,7 +33,7 @@ ADD . /opt/fao_sms/
 COPY variables.env /opt/fao_sms/sms_app/.env
 
 # use the EAT timezone
-RUN apk add tzdata
+RUN apk update && apk add tzdata
 COPY /usr/share/zoneinfo/Africa/Nairobi /etc/localtime
 RUN echo "Africa/Nairobi" > /etc/timezone
 
