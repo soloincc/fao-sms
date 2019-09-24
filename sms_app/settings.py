@@ -39,7 +39,7 @@ if 'DJANGO_ADMIN_USERNAME' in os.environ:
             'PASSWORD': os.environ['DEFAULT_DB_PASS'],
             'HOST': os.environ['DEFAULT_DB_HOST'],
             'PORT': os.environ['DEFAULT_DB_PORT'],
-            'TIMEZONE': os.environ['TIMEZONE']
+            'TIMEZONE': 'Africa/Nairobi'
         },
     }
 
