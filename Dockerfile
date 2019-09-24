@@ -29,4 +29,7 @@ WORKDIR /opt/fao_sms
 # add (the rest of) our code
 ADD . /opt/fao_sms/
 
+# move the variables.env file
+COPY variables.env /opt/fao_sms/sms_app/.env
+
 CMD ["/opt/fao_sms/docker/docker-entrypoint.sh"]
