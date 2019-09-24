@@ -243,6 +243,7 @@ class FAOSMSQueue():
 
         username = settings.SMS_GATEWAYS['gateways']['at']['USERNAME']
         api_key = settings.SMS_GATEWAYS['gateways']['at']['KEY']
+        print("Using the creds: %s - %s" % (username, api_key))
         africastalking.initialize(username, api_key)
         self.at_sms = africastalking.SMS
 
@@ -259,13 +260,13 @@ class FAOSMSQueue():
             # lets send the messages synchronously... should be changed to async
             # How does AT identify a message when a callback is given
             this_resp = self.at_sms.send(mssg.message, [mssg.recepient_no], enqueue=False)
+            print(this_resp)
             mssg.in_queue = 0
             mssg.queue_time = cur_time
             mssg.msg_status = settings.AT_STATUS_CODES[this_resp['SMSMessageData']['Recipients'][0]['statusCode']]
             mssg.provider_id = this_resp['SMSMessageData']['Recipients'][0]['messageId']
             mssg.full_clean()
             mssg.save()
-            # print(this_resp)
         except Exception as e:
             terminal.tprint(str(e), 'fail')
             sentry.captureException()
