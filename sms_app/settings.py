@@ -26,6 +26,7 @@ INSTALLED_APPS = [
 
 # define the database settings
 if 'DJANGO_ADMIN_USERNAME' in os.environ:
+    print("using os.environ variables...")
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
@@ -41,6 +42,7 @@ if 'DJANGO_ADMIN_USERNAME' in os.environ:
     TIMEZONE = os.environ['TIMEZONE']
 
 else:
+    print("using locally defined variables...")
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
