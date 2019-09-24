@@ -39,6 +39,9 @@ EOF
 # install the crontab
 # python manage.py crontab add
 
+# send the initial sms via at
+python manage.py send_scheduled_sms --provider at
+
 # initiate the cronjob
 crond
 

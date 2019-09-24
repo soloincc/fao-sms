@@ -43,6 +43,22 @@ if 'DJANGO_ADMIN_USERNAME' in os.environ:
             'TIMEZONE': 'Africa/Nairobi'
         },
     }
+
+    SMS_GATEWAYS = {
+        'default': 'at',            # the id of the gateway to use as a default. Select from the gateways listed below
+        'gateways_priority': [],    # the priority of the listed gateways, if not defined, the gateways will be selected randomly
+
+        'gateways': {
+            'infobip': {},
+            'at': {
+                'KEY': os.environ['AT_KEY'],
+                'ENDPOINT': 'https://api.sandbox.africastalking.com/version1/messaging',
+                'USERNAME': os.environ['AT_USERNAME']
+            },
+            'nexmo': {}
+        }
+    }
+
     SENTRY_DSN = 'https://%s:%s@sentry.badili.co.ke/7?verify_ssl=0' % (os.environ['SENTRY_USER'], os.environ['SENTRY_PASS'])
 
 else:
