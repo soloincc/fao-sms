@@ -1,6 +1,8 @@
 Django==2.2
 mysqlclient==1.4.2
-requests==2.13.0
+requests==2.18.4
+faker==2.0.2
+africastalking==1.1.8
 
 # jsonfield==2.0.2
 

@@ -4,12 +4,11 @@ printenv | grep -v "no_proxy" >> /etc/environment
 python -c 'import sys; print sys.path'
 cd /opt/fao_sms
 
-# make migrations for the gallery plugin
-# python manage.py makemigrations gallery
-# python manage.py migrate gallery --noinput
+# apply the migrations
+python manage.py migrate
 
-## run migrations -- its a bad idea to run migrations automatically. Migrations should be ran manually when they are needed
-# python manage.py migrate --noinput --run-syncdb
+# add the test data provided
+python manage.py add_test_data sms_app/input_sms.csv
 
 ## collect statics
 # echo "Collecting the static files... I will not post the progress"
@@ -29,6 +28,7 @@ email=environ.get('DJANGO_ADMIN_EMAIL')
 User.objects.filter(email=email).delete()
 User.objects.create_superuser(username, email, password)
 EOF
+
 
 # start the cron service
 # service cron start
