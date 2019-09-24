@@ -36,8 +36,8 @@ EOF
 # install the crontab
 # python manage.py crontab add
 
-# send the initial sms via at
-python manage.py send_scheduled_sms --provider at
+# send the initial sms via nexmo
+python manage.py send_scheduled_sms --provider nexmo
 
 # initiate the cronjob
 crond
