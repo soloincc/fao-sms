@@ -1,3 +1,4 @@
 env
+db_data
 *__pycache__
 sms_app/.env
