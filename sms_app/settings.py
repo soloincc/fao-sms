@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'raven.contrib.django.raven_compat',
+    'rest_framework',
     'sms_app'
 ]
 
@@ -42,6 +43,7 @@ if 'DJANGO_ADMIN_USERNAME' in os.environ:
             'TIMEZONE': 'Africa/Nairobi'
         },
     }
+    SENTRY_DSN = 'https://%s:%s@sentry.badili.co.ke/7?verify_ssl=0' % (os.environ['SENTRY_USER'], os.environ['SENTRY_PASS'])
 
 else:
     print("using locally defined variables...")
@@ -77,6 +79,7 @@ else:
             'nexmo': {}
         }
     }
+    SENTRY_DSN = 'https://%s:%s@sentry.badili.co.ke/7?verify_ssl=0' % (env('SENTRY_USER'), env('SENTRY_PASS'))
 
 # django middleware
 MIDDLEWARE = [
@@ -105,9 +108,15 @@ TEMPLATES = [
     },
 ]
 
-ROOT_URLCONF = 'sms_app.urls'
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
 
-SENTRY_DSN = 'https://%s:%s@sentry.badili.co.ke/7?verify_ssl=0' % (env('SENTRY_USER'), env('SENTRY_PASS'))
+ROOT_URLCONF = 'sms_app.urls'
 
 # our custom settings
 
