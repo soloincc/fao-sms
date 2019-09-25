@@ -4,6 +4,11 @@ Wangoru Kihara - FAO SMS developer written test
 A Wangoru Kihara implementation of the FAO written test for the SMS developer position
 
 
+# QUESTION 
+
+*Create a service that sends bulk SMS’s through different service providers with the characteristics as shared.*
+
+
 Building and Running using docker
 ------------
 
@@ -78,7 +83,36 @@ Service Providers
 My approach to the test
 ------------
 
-The app is developed using python3 and the Django framework. It uses MySQL as the database and has a provision of using Redis for queueing high volumes of messages. The app has been dockerized.
+The app is developed using python3 and the Django framework. It uses MySQL as the database and has a provision of using Redis for queueing high volumes of messages.
+
+#### Settings
+Most of the settings used in the app are in the file _sms_app/settings.py_ which can be edited appropriately. In addition to these, _sms_app/.env_ and _variables.env_ contain the secret variables for the virtual environment and docker implementations respectively. Their contents are similar. These values should be changed appropriately
+```bash
+PYTHONUNBUFFERED=1
+DEFAULT_DB_HOST=db
+DEFAULT_DB_PORT=3306
+DEFAULT_DB_NAME=fao_sms
+DEFAULT_DB_USER=xxxxxxxxxxxxx
+DEFAULT_DB_PASS=xxxxxxxxxxxxx
+DJANGO_ADMIN_USERNAME=xxxxxxxxxxxxx
+DJANGO_ADMIN_PASSWORD=xxxxxxxxxxxxx
+DJANGO_ADMIN_EMAIL=xxxxxxxxxxxxx
+
+DJANGO_SETTINGS_MODULE=sms_app.settings
+DEFAULT_DB_ENGINE=django.db.backends.mysql
+MYSQL_ROOT_PASSWORD=xxxxxxxxxxxxx
+
+AT_KEY=xxxxxxxxxxxxx
+AT_USERNAME=xxxxxxxxxxxxx
+
+SENTRY_USER=xxxxxxxxxxxxx
+SENTRY_PASS=xxxxxxxxxxxxx
+
+NEXMO_KEY=xxxxxxxxxxxxx
+NEXMO_SECRET=xxxxxxxxxxxxx
+```
+
+The app has been dockerized.
 ```bash
 version: '3.7'
 services:
@@ -186,6 +220,7 @@ Campaign and message template tables were created. The campaign table holds a li
 +---------------+---------------+------+-----+---------+----------------+
 ```
 
+All database tables are automatically created when starting the app based on the Models, _sms_app/models.py_
 
 ### The messages might be longer than the maximum allowed length of 918 characters
 The app holds the full length of the message in the message template. The message is only broken down into parts when being added to the SMS queue. The maximum allowed length is a setting which is set in the settings
