@@ -9,6 +9,13 @@ A Wangoru Kihara implementation of the FAO written test for the SMS developer po
 *Create a service that sends bulk SMS’s through different service providers with the characteristics as shared.*
 
 
+My approach to the question
+------------
+
+The app is developed using python3 and the Django framework. It uses MySQL as the database and has a provision of using Redis for queueing high volumes of messages. Messages have been configure to be sent via Africastalking or Nexmo. The KYC process for infobip took too long and wasn't complete during the 48 hour window of this assignment
+
+
+
 Building and Running using docker
 ------------
 
@@ -32,7 +39,7 @@ docker-compose up
 Building and Running using virtual environment
 ------------
 
-The app uses python3. Follow the [installation steps for your environment](https://realpython.com/installing-python/)
+The app uses python3 that can be run from a virtual environment. Follow the [installation steps for your environment](https://realpython.com/installing-python/)
 
 Clone the application, instantiate a virtual, install the requirements and ran the application
 ```bash
@@ -79,11 +86,6 @@ Service Providers
 ------------
 **Africastalking and Nexmo were implemented in the app.** Setting up of the account for Infobip took long due to their KYC (Know Your Customer) procedures which wasn't complete during the 48 hour window of this task
 
-
-My approach to the test
-------------
-
-The app is developed using python3 and the Django framework. It uses MySQL as the database and has a provision of using Redis for queueing high volumes of messages.
 
 #### Settings
 Most of the settings used in the app are in the file _sms_app/settings.py_ which can be edited appropriately. In addition to these, _sms_app/.env_ and _variables.env_ contain the secret variables for the virtual environment and docker implementations respectively. Their contents are similar. These values should be changed appropriately
