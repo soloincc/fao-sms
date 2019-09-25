@@ -114,55 +114,6 @@ NEXMO_KEY=xxxxxxxxxxxxx
 NEXMO_SECRET=xxxxxxxxxxxxx
 ```
 
-The app has been dockerized.
-```bash
-version: '3.7'
-services:
-  db:
-    build:
-      context: .
-      dockerfile: ./docker/db-Dockerfile
-    restart: unless-stopped
-    env_file:
-      - 'variables.env'
-    volumes:
-      - ./db_data:/var/lib/mysql:rw
-    ports:
-      - target: 3306
-        protocol: tcp
-
-    networks:
-      - sms-network
-
-  # app
-  sms-app:
-    restart: unless-stopped
-    build:
-      context: .
-    command: bash -c "./docker/wait-for-it.sh db:3306 --timeout=600 --strict -- ./docker/docker-entrypoint.sh"
-    env_file:
-      - 'variables.env'
-    networks:
-      - sms-network
-    ports:
-      - 9018:9018
-    links:
-      - db
-
-  # redis
-  redis:
-    restart: unless-stopped
-    image: redis
-    ports:
-      - 6381:6379
-    networks:
-      - sms-network
-
-#Docker Networks
-networks:
-  sms-network:
-    driver: bridge
-```
 
 ### The messages are stored in a queue ready to be dispatched
 A table was created to store this queue
