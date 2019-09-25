@@ -88,8 +88,7 @@ class SMSQueue(TimeModel):
     template = models.ForeignKey(MessageTemplates, on_delete=models.CASCADE)
     # The actual message that will be sent
     message = models.CharField(max_length=5000, blank=False, validators=[
-        MaxLengthValidator(5000, message='The message to be sent must not be more than 5000 characters'),
-        MinLengthValidator(10, message='The coop name must be more than 3 characters')
+        MaxLengthValidator(5000, message='The message to be sent must not be more than 5000 characters')
     ])
     recepient = models.ForeignKey(Recepients, blank=False, on_delete=models.CASCADE)
     # the actual number the message was sent to

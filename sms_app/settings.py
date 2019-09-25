@@ -147,6 +147,9 @@ SMS_VALIDITY = 48   # the number of hours an SMS is valid since it was queued
 # The default port to serve the application from
 DEFAULT_PORT = 9018
 
+# The maximum length an sms should be. We spare some characters for adding the message page numbers
+SMS_MAX_LENGTH = 300
+
 AT_STATUS_CODES = {
     100: "Processed",
     101: "Sent",

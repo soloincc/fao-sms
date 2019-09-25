@@ -99,6 +99,9 @@ class FAOSMSQueue():
         except MessageTemplates.DoesNotExist:
             msg_template = self.add_message_template(mssg['message'], mssg_uuid, cur_campaign)
 
+        # split the messages into parts if need be
+        messages = self.check_message_length(mssg['message'].strip())
+
         # split the recepients of the message and add to the queues
         for rec in mssg['recepient_nos'].split(','):
             rec = rec.strip()
@@ -112,26 +115,52 @@ class FAOSMSQueue():
             try:
                 recepient = Recepients.objects.filter(recepient_no=rec).get()
 
-                # check if a similar messa
-
                 # everything is now really good... so lets add this to the queue
                 # Django saves all the dates and times to the database in the UTC timezone
-                queue_item = SMSQueue(
-                    template=msg_template,
-                    message=mssg['message'].strip(),
-                    recepient=recepient,
-                    recepient_no=rec,
-                    msg_status='SCHEDULED',
-                    schedule_time=schedule_time
-                )
-                queue_item.full_clean()
-                queue_item.save()
+                # loop through the messages and add them to the queue
+                for cur_mssg in messages:
+                    queue_item = SMSQueue(
+                        template=msg_template,
+                        message=cur_mssg,
+                        recepient=recepient,
+                        recepient_no=rec,
+                        msg_status='SCHEDULED',
+                        schedule_time=schedule_time
+                    )
+                    queue_item.full_clean()
+                    queue_item.save()
             except Recepients.DoesNotExist:
                 recepient = self.add_recepient(rec)
             except Exception as e:
                 terminal.tprint(str(e), 'fail')
                 sentry.captureException()
                 raise Exception(str(e))
+
+    def check_message_length(self, message):
+        """
+
+        Given a message, check if it is within the acceptable message length, if not, split it into parts
+
+        Args:
+            message (string): The message to check its length
+
+        Returns
+            An array of strings with the messages. In the array the messages are ordered in order that they should be sent
+        """
+        if len(message) > settings.SMS_MAX_LENGTH:
+            # using range determine the indexes of the string to slice
+            # iterate through the indexes and get the subset of the message
+            # append the subsets to an array
+            # return the array
+            messages = []
+            mssg_parts = range(0, len(message), settings.SMS_MAX_LENGTH)
+            for i, j in zip(mssg_parts, range(len(mssg_parts))):
+                messages.append('%s %d/%d' % (message[i:i + settings.SMS_MAX_LENGTH], j + 1, len(mssg_parts)))
+
+            # return the messages
+            return messages
+        else:
+            return [message]
 
     def save_campaign(self, campaign_name):
         """Save a campaign since it does not exist
@@ -231,7 +260,7 @@ class FAOSMSQueue():
             if provider is None:
                 use_provider = random.choice(list(settings.SMS_GATEWAYS['gateways'].keys()))
             # fetch the sms whose sending schedule time has passed
-            sms2send = SMSQueue.objects.filter(schedule_time__lte=cur_time, msg_status='SCHEDULED').all()
+            sms2send = SMSQueue.objects.filter(schedule_time__lte=cur_time, msg_status='SCHEDULED').order_by('id').all()
             for sched_sms in sms2send:
                 # print('%s: %s - %s' % (sched_sms.id, sched_sms.schedule_time, sched_sms.recepient_no))
                 if use_provider == 'at':
