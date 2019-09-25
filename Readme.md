@@ -66,6 +66,10 @@ python manage.py send_scheduled_sms
 
 ```
 
+My approach to the test
+------------
+
+
 Functionality
 ------------
 
