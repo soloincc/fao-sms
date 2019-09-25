@@ -3,6 +3,7 @@ Wangoru Kihara - FAO SMS developer written test
 
 A Wangoru Kihara implementation of the FAO written test for the SMS developer position
 
+
 Building and Running using docker
 ------------
 
@@ -22,6 +23,7 @@ docker-compose build
 docker-compose up
 ```
 
+
 Building and Running using virtual environment
 ------------
 
@@ -37,6 +39,7 @@ source env/bin/activate
 pip install -r requirements.txt
 python manage.py runserver
 ```
+
 
 Manually running the app
 ------------
@@ -65,6 +68,12 @@ python manage.py send_scheduled_sms --provider nexmo
 python manage.py send_scheduled_sms
 
 ```
+
+
+Service Providers
+------------
+**Africastalking and Nexmo were implemented in the app.** Setting up of the account for Infobip took long due to their KYC (Know Your Customer) procedures which wasn't complete during the 48 hour window of this task
+
 
 My approach to the test
 ------------
@@ -120,7 +129,6 @@ networks:
 ```
 
 ### The messages are stored in a queue ready to be dispatched
-
 A table was created to store this queue
 ```bash
 +---------------+---------------+------+-----+---------+----------------+
@@ -146,12 +154,10 @@ In addition an automatic script was developed to automatically populate this tab
 
 
 ### The messages are valid for 48 hours and within/after this period each message should have a uniquely identifiable status independent of the service provider
-
 A message status field was added to the table. This field is populated with the message status at any given time. Some of this status include, *SCHEDULED*, *QUEUED*, *SENT*, *DELIVERED* and other operator statuses depending on the state of the message
 
 
 ### The messages might be grouped into campaigns where one, two or more of them are sent to multiple recipients
-
 Campaign and message template tables were created. The campaign table holds a list of campaigns, while the message templates table contains messages which might be sent in a campaign. The message template table design caters for message templates which might not necessarily be sent in a campaign. When a campaign is ran, the sms queue is populated with messages from the template as well as the data from the recepients table.
 
 **Campaign table**
@@ -182,28 +188,25 @@ Campaign and message template tables were created. The campaign table holds a li
 
 
 ### The messages might be longer than the maximum allowed length of 918 characters
-
 The app holds the full length of the message in the message template. The message is only broken down into parts when being added to the SMS queue. The maximum allowed length is a setting which is set in the settings
 
 
 ### All service providers provide HTTP endpoints and you should wrap the providers' API
-
 This is implemented by using the documentation from the service providers
 
 ### The service should be able to reliably switch providers during run-time without losing messages
-
 The app can randomly choose the service provider during runtime without losing messages. This is demonstrated by manually running the send messages command without giving a default provider `python manage.py send_scheduled_sms`
 
 **NOTE**: I called for some further clarification on this feature, but unfortunately I didn't get the technical person
 
 ### Developers should be able to use new providers without the need to extend or modify the service
-
 Done. Additional providers can easily be added 
 
 
 ### The service may be organized into a class, module or both.
-
 The app is organised in both
+
+
 
 
 Functionality
