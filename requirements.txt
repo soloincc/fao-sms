@@ -1,6 +1,6 @@
 Django==2.2.4
 mysqlclient==1.4.2
-requests==2.18.4
+requests==2.20.0
 faker==2.0.2
 africastalking==1.1.8
 raven==6.5.0
